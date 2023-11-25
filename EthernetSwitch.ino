@@ -1,11 +1,15 @@
-/*
-#include <SPI.h>
-#include <Ethernet.h>
-*/
-
-
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
+// Nano
 #include <UIPEthernet.h>
-#include <UIPUdp.h>
+//#include <UIPUdp.h>
+
+//#include <EthernetENC.h> // uses a bit less memory than UIPEthernet
+#else
+// Mega
+#include <Ethernet.h> // does not work with an Arduino nano and its internet shield because it uses ENC28J60 which is a different instruction set
+#endif
+
+//#include <SPI.h>
 
 EthernetServer server(80);  // create a server at port 80
 
@@ -21,7 +25,7 @@ void setup()
     byte mac[] = { 0x54, 0x34, 0x41, 0x30, 0x30, 0x31 };                                       
       
     IPAddress ip(192,168,1,179); //<<< ENTER YOUR IP ADDRESS HERE!!!
-  
+
     Ethernet.begin(mac, ip);  // initialize Ethernet device
     server.begin();           // start to listen for clients
     Serial.begin(9600);       // for diagnostics
@@ -73,6 +77,7 @@ void loop()
                         client.println("<!DOCTYPE html>");
                         client.println("<html>");
                         client.println("<head>");
+                        client.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
                         client.println("<title>Arduino port Control</title>");
                         client.println("</head>");
                         client.println("<body>");
